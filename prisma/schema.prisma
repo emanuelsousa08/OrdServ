@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StatusOS {
+  EM_ANALISE
+  EM_EXECUCAO
+  CONCLUIDA
+}
+
+model OrdemServico {
+  id          Int      @id @default(autoincrement())
+  numero      String   @unique
+  cliente     String
+  telefone    String?
+  equipamento String
+  marcaModelo String?
+  problema    String
+  diagnostico String?
+  status      StatusOS @default(EM_ANALISE)
+  valor       Decimal? @db.Decimal(10, 2)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
