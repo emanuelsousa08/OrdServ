@@ -51,5 +51,8 @@ jobs:
       - name: Aplicar migrations
         run: npx prisma migrate deploy
 
-      - name: Executar testes
-        run: npm test
+      - name: Executar ESLint
+        run: npm run lint
+
+      - name: Executar testes e verificar cobertura
+        run: npm run coverage
