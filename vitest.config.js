@@ -6,5 +6,17 @@ export default defineConfig({
     environment: "node",
     clearMocks: true,
     restoreMocks: true,
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.js"],
+      exclude: ["src/generated/**", "src/server.js"],
+      reporter: ["text", "html"],
+      thresholds: {
+        statements: 95,
+        branches: 85,
+        functions: 95,
+        lines: 95,
+      },
+    },
   },
 });

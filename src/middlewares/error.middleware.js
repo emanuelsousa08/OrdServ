@@ -1,4 +1,4 @@
-export function errorMiddleware(error, req, res, next) {
+export function errorMiddleware(error, req, res, _next) {
   req.log.error({ err: error }, "Erro na requisição");
 
   const statusCode =
