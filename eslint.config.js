@@ -3,11 +3,7 @@ import globals from "globals";
 
 export default [
   {
-    ignores: [
-      "node_modules/**",
-      "coverage/**",
-      "src/generated/**",
-    ],
+    ignores: ["node_modules/**", "coverage/**", "src/generated/**"],
   },
   js.configs.recommended,
   {
@@ -27,6 +23,14 @@ export default [
           varsIgnorePattern: "^_",
         },
       ],
+    },
+  },
+  {
+    files: ["tests/performance/**/*.js"],
+    languageOptions: {
+      globals: {
+        __ENV: "readonly",
+      },
     },
   },
 ];
