@@ -1,0 +1,339 @@
+openapi: 3.1.0
+
+info:
+  title: OrdServ API
+  description: API REST para gerenciamento de ordens de serviço.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Ambiente local
+
+security: []
+
+tags:
+  - name: Saúde
+    description: Verificação da aplicação e do banco de dados
+  - name: Ordens de Serviço
+    description: Operações de gerenciamento de ordens de serviço
+
+paths:
+  /api/health:
+    get:
+      operationId: verificarSaude
+      tags:
+        - Saúde
+      summary: Verifica o funcionamento da API
+      responses:
+        "200":
+          description: API funcionando corretamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  application:
+                    type: string
+                    example: OrdServ
+                  message:
+                    type: string
+                    example: API funcionando corretamente.
+
+  /api/health/db:
+    get:
+      operationId: verificarSaudeBanco
+      tags:
+        - Saúde
+      summary: Verifica a conexão com o PostgreSQL
+      responses:
+        "200":
+          description: Conexão estabelecida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  database:
+                    type: string
+                    example: PostgreSQL
+                  message:
+                    type: string
+                    example: Conexão com o banco de dados estabelecida.
+        "503":
+          description: Falha na conexão com o banco de dados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthError"
+
+  /api/ordens-servico:
+    post:
+      operationId: criarOrdemServico
+      tags:
+        - Ordens de Serviço
+      summary: Cadastra uma ordem de serviço
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NovaOrdemServico"
+      responses:
+        "201":
+          description: Ordem de serviço cadastrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdemServico"
+        "400":
+          description: Dados obrigatórios ausentes ou inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Número de ordem de serviço já cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    get:
+      operationId: listarOrdensServico
+      tags:
+        - Ordens de Serviço
+      summary: Lista todas as ordens de serviço
+      responses:
+        "200":
+          description: Lista de ordens de serviço
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrdemServico"
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/ordens-servico/{id}:
+    get:
+      operationId: buscarOrdemServicoPorId
+      tags:
+        - Ordens de Serviço
+      summary: Busca uma ordem de serviço pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identificador numérico da ordem de serviço
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Ordem de serviço encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdemServico"
+        "400":
+          description: ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Ordem de serviço não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/ordens-servico/{id}/status:
+    patch:
+      operationId: atualizarStatusOrdemServico
+      tags:
+        - Ordens de Serviço
+      summary: Atualiza o status de uma ordem de serviço
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Identificador numérico da ordem de serviço
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  $ref: "#/components/schemas/StatusOS"
+      responses:
+        "200":
+          description: Status atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdemServico"
+        "400":
+          description: ID ou status inválido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Ordem de serviço não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    StatusOS:
+      type: string
+      enum:
+        - EM_ANALISE
+        - EM_EXECUCAO
+        - CONCLUIDA
+
+    NovaOrdemServico:
+      type: object
+      required:
+        - numero
+        - cliente
+        - equipamento
+        - problema
+      properties:
+        numero:
+          type: string
+          example: OS-2026-001
+        cliente:
+          type: string
+          example: João da Silva
+        telefone:
+          type: string
+          example: "88999999999"
+        equipamento:
+          type: string
+          example: Notebook
+        marcaModelo:
+          type: string
+          example: Dell Inspiron 15
+        problema:
+          type: string
+          example: Equipamento não liga
+        diagnostico:
+          type: string
+          example: Fonte de alimentação danificada
+        status:
+          $ref: "#/components/schemas/StatusOS"
+        valor:
+          oneOf:
+            - type: number
+            - type: string
+          example: 250.00
+
+    OrdemServico:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        numero:
+          type: string
+          example: OS-2026-001
+        cliente:
+          type: string
+          example: João da Silva
+        telefone:
+          type:
+            - string
+            - "null"
+          example: "88999999999"
+        equipamento:
+          type: string
+          example: Notebook
+        marcaModelo:
+          type:
+            - string
+            - "null"
+          example: Dell Inspiron 15
+        problema:
+          type: string
+          example: Equipamento não liga
+        diagnostico:
+          type:
+            - string
+            - "null"
+          example: Fonte de alimentação danificada
+        status:
+          $ref: "#/components/schemas/StatusOS"
+        valor:
+          type:
+            - string
+            - "null"
+          example: "250.00"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ERROR
+        message:
+          type: string
+          example: Dados inválidos ou incompletos.
+
+    HealthError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ERROR
+        database:
+          type: string
+          example: PostgreSQL
+        message:
+          type: string
+          example: Não foi possível conectar ao banco de dados.
