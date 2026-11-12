@@ -103,6 +103,22 @@ npm run lint
 
 O pipeline CI do GitHub Actions executa as verificações de lint e cobertura de testes.
 
+## Métrica e SLO
+
+A aplicação disponibiliza métricas no endpoint `GET /metrics`, utilizando o formato Prometheus.
+
+A métrica `http_requests_total` contabiliza as requisições HTTP por método e código de resposta, exceto as requisições ao próprio endpoint `/metrics`.
+
+**SLO de disponibilidade:**
+
+- Meta: 99%.
+- Janela de avaliação: 7 dias.
+- Critério: proporção de requisições que não retornam erros HTTP 5xx em relação ao total de requisições.
+
+O cálculo pode ser realizado no Prometheus utilizando a métrica `http_requests_total`.
+
+**Limitação:** a métrica é armazenada em memória e reiniciada junto com a aplicação. Como não há coleta e armazenamento histórico configurados neste projeto, o SLO representa uma meta operacional, não uma disponibilidade histórica efetivamente medida.
+
 ## Endpoints
 
 | Método | Rota                             | Descrição                         |
