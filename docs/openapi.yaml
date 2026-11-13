@@ -6,8 +6,8 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3000
-    description: Ambiente local
+  - url: /
+    description: Servidor atual (local ou produção)
 
 security: []
 
