@@ -271,6 +271,31 @@ docker-compose.yaml  serviços da aplicação
 .dockerignore    arquivos ignorados no build
 ```
 
+## Demonstração online
+
+A aplicação está hospedada no Render e pode ser acessada pelos seguintes endereços:
+
+| Recurso | Endereço |
+| --- | --- |
+| API REST | https://ordserv-api.onrender.com |
+| Documentação interativa (Swagger UI) | https://ordserv-api.onrender.com/api-docs/ |
+| Health check da API | https://ordserv-api.onrender.com/api/health |
+| Health check do PostgreSQL | https://ordserv-api.onrender.com/api/health/db |
+| Métricas Prometheus | https://ordserv-api.onrender.com/metrics |
+
+### Limitações do ambiente de demonstração
+
+> **Aviso:** esta implantação possui finalidade exclusivamente acadêmica e demonstrativa. A aplicação não deve ser considerada um sistema destinado à operação em ambientes reais de produção.
+
+A hospedagem utiliza os recursos gratuitos do Render, que possuem algumas limitações:
+
+- **Suspensão por inatividade:** o serviço da API entra em suspensão após 15 minutos sem receber requisições. A primeira chamada após esse período pode levar cerca de um minuto para responder, devido à inicialização do serviço.
+- **Persistência do banco de dados:** a instância gratuita do PostgreSQL possui validade de 30 dias a partir de sua criação. Portanto, a permanência dos registros não é garantida indefinidamente.
+- **Disponibilidade:** não há garantia de funcionamento contínuo, pois o serviço está sujeito às limitações do plano gratuito.
+- **Armazenamento local:** o sistema de arquivos do serviço da API é efêmero. Os dados da aplicação são armazenados no PostgreSQL, não nesse armazenamento local.
+
+Essas limitações são próprias da infraestrutura gratuita utilizada para disponibilizar a demonstração e não representam garantias de disponibilidade, persistência ou continuidade operacional de um ambiente de produção.
+
 ## Autoria
 
 Projeto individual de Emanuel Sousa. Confira em [`CONTRIBUTORS.md`](./CONTRIBUTORS.md).
