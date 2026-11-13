@@ -4,6 +4,8 @@
 
 API REST para gerenciamento de ordens de serviço, permitindo cadastrar, consultar e atualizar o status dos atendimentos.
 
+[![CI](https://github.com/emanuelsousa08/OrdServ/actions/workflows/ci.yaml/badge.svg)](https://github.com/emanuelsousa08/OrdServ/actions/workflows/ci.yaml)
+
 **Fluxo principal:** cadastrar ordem de serviço → consultar ordens → acompanhar atendimento → atualizar status.
 
 ## Regras de negócio
